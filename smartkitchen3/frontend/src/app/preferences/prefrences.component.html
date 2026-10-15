@@ -1,0 +1,97 @@
+<!-- Renders household preference controls and save actions. -->
+<div class="preferences-container">
+
+  <header class="preferences-header">
+    <h2>Meal Preferences</h2>
+    <p class="subtitle">Customize your recommendations, diets, and excluded ingredients.</p>
+  </header>
+
+  <section class="pref-section">
+    <h3>Preferred Categories</h3>
+    <div class="chips-grid">
+      <label 
+        *ngFor="let cat of availableCategories" 
+        class="chip-label"
+        [class.is-selected]="prefs.preferred_categories.includes(cat)">
+        <input
+          type="checkbox"
+          [checked]="prefs.preferred_categories.includes(cat)"
+          (change)="toggleCategory(cat, $event)"
+        />
+        {{ cat | titlecase }}
+      </label>
+    </div>
+  </section>
+
+  <section class="pref-section">
+    <h3>Preparation Preferences</h3>
+    <div class="preparation-grid">
+      <label>
+        Difficulty
+        <select [(ngModel)]="prefs.difficulty_preference">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label>
+        Minimum minutes
+        <input type="number" min="0" step="5" [(ngModel)]="prefs.preferred_prep_time_range.min" />
+      </label>
+      <label>
+        Maximum minutes
+        <input type="number" min="0" step="5" [(ngModel)]="prefs.preferred_prep_time_range.max" />
+      </label>
+    </div>
+  </section>
+
+  <section class="pref-section">
+    <h3>Dietary Restrictions</h3>
+    <div class="chips-grid">
+      <label 
+        *ngFor="let diet of availableDiets" 
+        class="chip-label"
+        [class.is-selected]="prefs.dietary_constraints.includes(diet)">
+        <input
+          type="checkbox"
+          [checked]="prefs.dietary_constraints.includes(diet)"
+          (change)="toggleDiet(diet, $event)"
+        />
+        {{ diet }}
+      </label>
+    </div>
+  </section>
+
+  <section class="pref-section">
+    <h3>Disliked Ingredients</h3>
+
+    <div class="ingredient-input-row">
+      <input
+        type="text"
+        placeholder="Type ingredient to exclude... (e.g., cilantro)"
+        [(ngModel)]="newIngredient"
+        (keydown.enter)="addIngredient()"
+      />
+      <button (click)="addIngredient()">Add</button>
+    </div>
+
+    <div class="excluded-chips-list" *ngIf="prefs.disliked_ingredients.length > 0">
+      <span *ngFor="let ing of prefs.disliked_ingredients" class="excluded-chip">
+        {{ ing }}
+        <button class="remove-chip-btn" (click)="removeIngredient(ing)">×</button>
+      </span>
+    </div>
+    
+    <div *ngIf="prefs.disliked_ingredients.length === 0" class="empty-inline-state">
+      No ingredients excluded yet.
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <p class="save-error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <button class="save-btn" (click)="saveSettings()" [disabled]="saving">
+      {{ saving ? 'Saving…' : 'Save Preferences' }}
+    </button>
+  </div>
+
+</div>

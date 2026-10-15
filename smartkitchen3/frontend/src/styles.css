@@ -1,0 +1,23 @@
+/* Defines the shared Smart Kitchen design system, accessibility rules, and browser defaults. */
+:root {
+  --color-primary-900: #123c2f; --color-primary-800: #18513e; --color-primary-700: #206a50;
+  --color-primary-100: #dff2e9; --color-primary-50: #f0f8f4; --color-accent: #e5a73b;
+  --color-canvas: #f5f7f3; --color-surface: #fff; --color-surface-muted: #f8faf8;
+  --color-text: #17231d; --color-text-muted: #607068; --color-border: #dce5df;
+  --color-danger: #b42318; --color-danger-soft: #fef3f2; --color-warning: #b54708;
+  --color-warning-soft: #fff7ed; --color-success: #16794b; --color-success-soft: #ecfdf3;
+  --shadow-sm: 0 1px 2px rgba(18,60,47,.05); --shadow-md: 0 10px 28px rgba(18,60,47,.09);
+  --shadow-lg: 0 24px 64px rgba(18,60,47,.18); --radius-sm: 8px; --radius-md: 14px;
+  --radius-lg: 20px; --page-width: 1180px; --transition: 160ms ease;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--color-text); background: var(--color-canvas); font-synthesis: none; text-rendering: optimizeLegibility;
+}
+*,*::before,*::after{box-sizing:border-box} html{min-width:320px;min-height:100%;background:var(--color-canvas)}
+body{min-height:100vh;margin:0;background:var(--color-canvas);color:var(--color-text);line-height:1.5}
+button,input,select,textarea{font:inherit} button,a{-webkit-tap-highlight-color:transparent} button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.58} a{color:var(--color-primary-700);text-underline-offset:3px}
+h1,h2,h3,h4,p{overflow-wrap:anywhere} h1,h2,h3,h4{letter-spacing:-.02em}
+input,select,textarea{min-height:44px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-surface);color:var(--color-text);padding:10px 12px;transition:border-color var(--transition),box-shadow var(--transition)}
+input::placeholder,textarea::placeholder{color:#88958e} input:focus,select:focus,textarea:focus{outline:none;border-color:var(--color-primary-700);box-shadow:0 0 0 3px rgba(32,106,80,.14)}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:3px solid rgba(32,106,80,.28);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}

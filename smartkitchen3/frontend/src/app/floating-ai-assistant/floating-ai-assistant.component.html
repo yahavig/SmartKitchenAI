@@ -1,0 +1,29 @@
+<!-- Renders the global floating AI trigger and accessible household chat panel. -->
+<section class="assistant-panel" *ngIf="isOpen" aria-label="Smart Kitchen AI assistant">
+  <header>
+    <div><strong>Kitchen Assistant</strong><span>Ask about your inventory and preferences</span></div>
+    <button type="button" (click)="toggle()" aria-label="Close AI assistant">×</button>
+  </header>
+
+  <div class="assistant-messages" [attr.aria-busy]="isWaiting" aria-live="polite">
+    <p class="welcome" *ngIf="messages.length === 0">How can I help with your kitchen?</p>
+    <div *ngFor="let message of messages" class="message" [class.user]="message.role === 'user'">
+      {{ message.text }}
+    </div>
+    <div class="buffering" *ngIf="isWaiting" role="status">
+      <span></span><span></span><span></span>
+      <span class="visually-hidden">AI is preparing a response</span>
+    </div>
+  </div>
+
+  <div class="assistant-input">
+    <input [(ngModel)]="question" (keydown.enter)="send()" [disabled]="isWaiting"
+           aria-label="Question for the AI assistant" placeholder="Ask about your kitchen..." />
+    <button type="button" (click)="send()" [disabled]="isWaiting || !question.trim()">Send</button>
+  </div>
+</section>
+
+<button class="assistant-trigger" type="button" (click)="toggle()"
+        [attr.aria-expanded]="isOpen" aria-label="Ask Smart Kitchen AI">
+  <span aria-hidden="true">✦</span> {{ isOpen ? 'Close' : 'Ask AI' }}
+</button>

@@ -1,0 +1,75 @@
+<!-- Renders action history, ratings, and the selected recipe detail panel. -->
+<div class="history-container">
+
+  <h2>Cooking History</h2>
+  <p class="subtitle">Track your past meals and AI suggestions.</p>
+
+  <div *ngIf="loading" class="empty-state">Loading history...</div>
+  <div *ngIf="error" class="empty-state error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngIf="history.length === 0" class="empty-state">No cooking history yet.</div>
+
+    <div *ngIf="history.length > 0" class="history-grid">
+      <div *ngFor="let item of history" 
+           class="history-card" 
+           [class.is-skipped]="item.action === 'skipped'"
+           (click)="openRecipeDetail(item.recipe_id, item.name)">
+
+        <div class="card-top">
+          <div class="date-badge">
+            <span class="day">{{ getDateParts(item.date).day }}</span>
+            <span class="month">{{ getDateParts(item.date).month }}</span>
+          </div>
+          <span class="status-badge" [class.skipped]="item.action === 'skipped'">
+            {{ item.action === 'skipped' ? 'Skipped' : 'Cooked' }}
+          </span>
+        </div>
+
+        <div class="recipe-info">
+          <h3>{{ item.name }}</h3>
+          <p class="formatted-date">Logged on {{ formatDate(item.date) }}</p>
+        </div>
+
+        <div class="rating-section" *ngIf="item.action !== 'skipped'">
+          <div class="stars">
+            <span *ngFor="let s of [1,2,3,4,5]" 
+                  class="star-item" 
+                  [class.filled]="s <= item.rating">
+              ★
+            </span>
+          </div>
+          <span class="rating-value">{{ item.rating > 0 ? (item.rating + '/5') : 'Not rated' }}</span>
+        </div>
+
+        <div class="skipped-placeholder" *ngIf="item.action === 'skipped'">
+          No rating for skipped items
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="selectedRecipeDetail || loadingDetail" (click)="closeRecipeDetail()">
+    <div class="modal-content recipe-detail-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ selectedRecipeDetail?.name || 'Loading...' }}</h2>
+        <button class="close-btn" (click)="closeRecipeDetail()">Close</button>
+      </div>
+      <div *ngIf="loadingDetail" class="modal-loading">Loading recipe details...</div>
+      <ng-container *ngIf="selectedRecipeDetail as recipe">
+        <p class="recipe-modal-desc" *ngIf="recipe.description">{{ recipe.description }}</p>
+        <div class="meta">
+          <span>{{ recipe.minutes }} min</span>
+          <span>{{ recipe.n_steps }} steps</span>
+        </div>
+        <h4>Ingredients</h4>
+        <ul><li *ngFor="let ing of recipe.ingredients">{{ ing }}</li></ul>
+        <h4>Instructions</h4>
+        <ol *ngIf="recipe.steps.length > 0; else noSteps">
+          <li *ngFor="let step of recipe.steps">{{ step }}</li>
+        </ol>
+        <ng-template #noSteps><p>No instructions available.</p></ng-template>
+      </ng-container>
+    </div>
+  </div>
+</div>

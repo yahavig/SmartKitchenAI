@@ -1,0 +1,71 @@
+<!-- Renders the household dashboard, urgent inventory, and recent activity. -->
+<div class="home-container">
+  <header class="home-header">
+    <h1>Welcome, {{ householdName }}</h1>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </header>
+
+  <section class="kpi-grid" aria-label="Household overview">
+    <a class="kpi-card" routerLink="/inventory" aria-label="Open inventory: products in inventory">
+      <span class="kpi-label">Products in inventory</span>
+      <strong>{{ kpis.productsInInventory }}</strong>
+      <span class="kpi-detail">Total tracked products</span>
+      <span class="kpi-link-hint" aria-hidden="true">View inventory →</span>
+    </a>
+    <a class="kpi-card warning-kpi" routerLink="/inventory" aria-label="Open inventory: items expiring soon">
+      <span class="kpi-label">Items expiring soon</span>
+      <strong>{{ kpis.itemsExpiringSoon }}</strong>
+      <span class="kpi-detail">Within the next 7 days</span>
+      <span class="kpi-link-hint" aria-hidden="true">Review items →</span>
+    </a>
+    <a class="kpi-card recommendation-kpi" routerLink="/recommendations" aria-label="Open available recommendations">
+      <span class="kpi-label">Available recommendations</span>
+      <strong>{{ kpis.availableRecommendations }}</strong>
+      <span class="kpi-detail">Matched to your kitchen</span>
+      <span class="kpi-link-hint" aria-hidden="true">View recipes →</span>
+    </a>
+    <a class="kpi-card" routerLink="/history" aria-label="Open history: cooked recipes">
+      <span class="kpi-label">Cooked recipes</span>
+      <strong>{{ kpis.cookedRecipes }}</strong>
+      <span class="kpi-detail">Completed meals</span>
+      <span class="kpi-link-hint" aria-hidden="true">View history →</span>
+    </a>
+    <a class="kpi-card muted-kpi" routerLink="/history" aria-label="Open history: skipped recipes">
+      <span class="kpi-label">Skipped recipes</span>
+      <strong>{{ kpis.skippedRecipes }}</strong>
+      <span class="kpi-detail">Dismissed suggestions</span>
+      <span class="kpi-link-hint" aria-hidden="true">View history →</span>
+    </a>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="dashboard-panel urgent-panel">
+      <h2>Reminders</h2>
+      <div *ngIf="urgentItems.length === 0" class="empty-state">No urgent items!</div>
+      <div class="urgent-list">
+        <div *ngFor="let item of urgentItems" class="urgent-item">
+          <span class="item-name">{{ item.name }}</span>
+          <span [ngClass]="getExpiryClass(item.getDaysToExpiry())">
+            {{ item.getDaysToExpiry() }} days left
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-panel history-panel">
+      <div class="panel-header">
+        <h2>History</h2>
+        <button class="view-all-btn" (click)="goTo('/history')">Full History</button>
+      </div>
+      <div *ngIf="recentHistory.length === 0" class="empty-state">No recent activity.</div>
+      <div class="history-list">
+        <div *ngFor="let item of recentHistory" class="quick-history-item">
+          <div class="history-details">
+            <h4>{{ item.name }}</h4>
+            <small>{{ item.action === 'skipped' ? 'Skipped' : 'Cooked' }} on {{ item.date | date:'dd/MM/yyyy' }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

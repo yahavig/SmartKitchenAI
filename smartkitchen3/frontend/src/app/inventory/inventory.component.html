@@ -1,0 +1,134 @@
+<!-- Renders inventory items and the validated product-entry form. -->
+<div class="inventory-container">
+
+  <header class="inventory-header">
+    <h2>Your Inventory</h2>
+  </header>
+
+  <div class="add-form-row">
+    <input
+      type="text"
+      placeholder="Product name"
+      [(ngModel)]="newProductName"
+      name="productName"
+    />
+
+    <input
+      type="number"
+      placeholder="Weight (grams)"
+      [(ngModel)]="newProductWeight"
+      name="productWeight"
+    />
+
+    <input
+      type="date"
+      [(ngModel)]="newProductExpiry"
+      name="productExpiry"
+      required
+      aria-label="Expiry date"
+    />
+
+    <select [(ngModel)]="newProductCategory" name="productCategory">
+      <option value="General">General</option>
+      <option value="Meat">Meat</option>
+      <option value="Fruits">Fruits</option>
+      <option value="Vegetables">Vegetables</option>
+      <option value="Dairy">Dairy</option>
+    </select>
+
+    <button (click)="addProduct()">
+      Add Item
+    </button>
+  </div>
+
+  <p *ngIf="formError" class="form-error" role="alert">{{ formError }}</p>
+
+  <div *ngIf="inventory.length > 0" class="inventory-toolbar">
+    <div class="toolbar-copy">
+      <span class="toolbar-title">Inventory overview</span>
+      <span class="toolbar-count">{{ inventory.length }} {{ inventory.length === 1 ? 'item' : 'items' }}</span>
+    </div>
+    <label class="sort-control" for="inventory-sort">
+      <span>Sort by</span>
+      <select
+        id="inventory-sort"
+        [(ngModel)]="sortOption"
+        (ngModelChange)="applySorting()"
+        name="inventorySort"
+        aria-label="Sort inventory"
+      >
+        <option value="status">Expiry status (default)</option>
+        <option value="quantity-desc">Quantity: high to low</option>
+        <option value="quantity-asc">Quantity: low to high</option>
+      </select>
+    </label>
+  </div>
+
+  <div *ngIf="inventory.length === 0" class="empty-state">
+    No products currently in your inventory.
+  </div>
+
+  <div *ngIf="inventorySections.active.length > 0" class="inventory-grid">
+    
+    <div *ngFor="let item of inventorySections.active" class="inventory-card">
+      
+      <div class="card-main">
+        <h3>{{ item.name }}</h3>
+        <p class="weight-badge">{{ item.quantity_grams }}g</p>
+      </div>
+
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="label">Expiry:</span>
+          <span class="value">{{ item.getFormattedDate() }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Category:</span>
+          <span class="value">{{ item.category }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status:</span>
+          <span class="value status-text" [ngClass]="item.getStatusClass()">
+            {{ item.getUrgencyStatus() }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="delete-btn" (click)="deleteProduct(item)">
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <section *ngIf="inventorySections.expired.length > 0" class="expired-section" aria-labelledby="expired-products-heading">
+    <div class="section-heading">
+      <div>
+        <h3 id="expired-products-heading">Expired Products</h3>
+        <p>Review and remove products that are no longer safe to use.</p>
+      </div>
+      <span class="expired-count">{{ inventorySections.expired.length }}</span>
+    </div>
+
+    <div class="inventory-grid">
+      <div *ngFor="let item of inventorySections.expired" class="inventory-card expired-card">
+        <div class="card-main">
+          <h3>{{ item.name }}</h3>
+          <p class="weight-badge">{{ item.quantity_grams }}g</p>
+        </div>
+
+        <div class="card-details">
+          <div class="detail-row"><span class="label">Expiry:</span><span class="value">{{ item.getFormattedDate() }}</span></div>
+          <div class="detail-row"><span class="label">Category:</span><span class="value">{{ item.category }}</span></div>
+          <div class="detail-row"><span class="label">Status:</span><span class="value status-text status-expired">Expired</span></div>
+        </div>
+
+        <div class="card-actions"><button class="delete-btn" (click)="deleteProduct(item)">Delete</button></div>
+      </div>
+    </div>
+  </section>
+
+</div>

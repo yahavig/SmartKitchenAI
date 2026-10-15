@@ -1,0 +1,82 @@
+<!-- Renders the household login form and authentication feedback. -->
+<div class="login-page">
+  <div class="login-card">
+
+    <header class="login-header">
+      <h2>Welcome Back</h2>
+      <p>Log in to manage your smart kitchen</p>
+    </header>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm" novalidate>
+
+      <div class="form-group">
+        <label for="login-email">Email Address</label>
+        <input
+          id="login-email"
+          type="email"
+          name="email"
+          [(ngModel)]="loginData.email"
+          placeholder="name@example.com"
+          [disabled]="isLoading"
+          maxlength="254"
+          autocomplete="email"
+          inputmode="email"
+          [attr.aria-invalid]="!!fieldErrors.email"
+          aria-describedby="login-email-error"
+          required
+          email
+          #emailRef="ngModel"
+        />
+        <small id="login-email-error" class="field-error" *ngIf="fieldErrors.email || (emailRef.invalid && emailRef.touched)">
+          {{ fieldErrors.email || 'Please enter a valid email address.' }}
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <div class="password-input">
+          <input
+            id="login-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="loginData.password"
+            placeholder="Enter your password"
+            [disabled]="isLoading"
+            required
+            maxlength="128"
+            autocomplete="current-password"
+            [attr.aria-invalid]="!!fieldErrors.password"
+            aria-describedby="login-password-error"
+            #passRef="ngModel"
+          />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword"
+                  [disabled]="isLoading" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <small id="login-password-error" class="field-error" *ngIf="fieldErrors.password || (passRef.invalid && passRef.touched)">
+          {{ fieldErrors.password || 'Please enter your password.' }}
+        </small>
+      </div>
+
+      <p class="error-text" *ngIf="errorMessage" role="alert" aria-live="polite">{{ errorMessage }}</p>
+
+      <button
+        type="submit"
+        class="btn-login"
+        [disabled]="isLoading || loginForm.invalid">
+        <span *ngIf="!isLoading">Log In</span>
+        <span *ngIf="isLoading">Checking credentials...</span>
+      </button>
+
+    </form>
+
+    <footer class="login-footer">
+      <p>
+        Don't have an account?
+        <a routerLink="/signup">Sign up here</a>
+      </p>
+    </footer>
+
+  </div>
+</div>

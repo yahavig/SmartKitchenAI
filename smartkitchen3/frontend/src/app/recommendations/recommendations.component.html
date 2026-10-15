@@ -1,0 +1,154 @@
+<!-- Renders ranked recommendations, recipe details, action dialogs, and chat. -->
+<div class="recommendations-container">
+
+  <h2>Recipe Recommendations</h2>
+
+  <div *ngIf="isLoadingRecipes" class="loading">
+    Loading recipes...
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoadingRecipes && !errorMessage" class="recipes-list">
+
+    <div *ngFor="let recipe of suggestions" class="recipe-card" role="button" tabindex="0"
+         (click)="selectRecipe(recipe)" (keydown.enter)="selectRecipe(recipe)">
+
+      <h3>{{ recipe.name }}</h3>
+
+      <p class="score" [ngClass]="getScoreClass(recipe.score)">
+        Match: {{ recipe.score }}%
+      </p>
+
+      <p class="desc">
+        {{ recipe.description }}
+      </p>
+
+      <div class="meta">
+        <span>{{ recipe.minutes }} min</span>
+        <span>{{ recipe.nSteps }} steps</span>
+      </div>
+
+      <div class="actions">
+
+        <button (click)="markAsCooked(recipe); $event.stopPropagation()">
+          Cooked
+        </button>
+
+        <button (click)="markAsSkipped(recipe); $event.stopPropagation()">
+          Skip
+        </button>
+
+        <button *ngIf="hasMissingIngredients(recipe)" (click)="openShoppingCart(recipe); $event.stopPropagation()">
+          Shopping List
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal" *ngIf="selectedRecipe" (click)="closePanel()">
+    <div class="modal-content recipe-detail-modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>{{ selectedRecipe.name }}</h2>
+        <button class="close-btn" (click)="closePanel()">Close</button>
+      </div>
+
+      <p class="recipe-modal-desc">{{ selectedRecipe.description }}</p>
+
+      <div *ngIf="selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0">
+        <h4>Ingredients</h4>
+        <ul>
+          <li *ngFor="let ing of selectedRecipe.ingredients">
+            {{ ing }}
+          </li>
+        </ul>
+      </div>
+
+      <div *ngIf="selectedRecipe.steps && selectedRecipe.steps.length > 0">
+        <h4>Steps</h4>
+        <ol>
+          <li *ngFor="let step of selectedRecipe.steps">
+            {{ step }}
+          </li>
+        </ol>
+      </div>
+
+      <div class="chat-box">
+        <h4>AI Recipe Assistance</h4>
+
+        <div class="messages" [attr.aria-busy]="isWaitingForAI">
+          <div *ngFor="let msg of chatMessages" [ngClass]="msg.role">
+            <span class="role-label">{{ msg.role === 'user' ? 'You: ' : 'AI Assistant: ' }}</span>
+            {{ msg.text }}
+          </div>
+          <div *ngIf="isWaitingForAI" class="ai-buffering" role="status" aria-live="polite">
+            <span class="role-label">AI Assistant:</span>
+            <span class="typing-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="visually-hidden">AI is preparing a response</span>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input [(ngModel)]="userQuestion" placeholder="Ask why this was recommended or how it matches your kitchen..."
+            (keydown.enter)="onEnter()" [disabled]="isWaitingForAI" />
+          <button (click)="sendQuestion()" [disabled]="isWaitingForAI || !userQuestion.trim()">
+            {{ isWaitingForAI ? 'Thinking...' : 'Ask AI' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" *ngIf="showShoppingCart" (click)="closeShoppingCart()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Missing Ingredients</h3>
+
+    <div *ngFor="let item of missingIngredients" class="shopping-item">
+      <label>
+        <input type="checkbox" [(ngModel)]="item.checked" />
+        {{ item.name }}
+      </label>
+    </div>
+
+    <div class="modal-actions"><button (click)="closeShoppingCart()">Close</button></div>
+  </div>
+</div>
+<div class="modal" *ngIf="showRatingModal">
+  <div class="modal-content">
+    <h3>Rate your meal</h3>
+
+    <div class="stars">
+      <span *ngFor="let s of [1,2,3,4,5]"
+            (click)="selectedRating = s; ratingError = ''"
+            [class.filled]="s <= selectedRating"
+            role="button"
+            [attr.aria-label]="s + ' stars'">
+        ★
+      </span>
+    </div>
+
+    <p *ngIf="ratingError" class="error" role="alert">{{ ratingError }}</p>
+
+    <button (click)="confirmCooked()" [disabled]="selectedRating < 1 || isSavingCooked">
+      {{ isSavingCooked ? 'Updating inventory...' : 'Confirm' }}
+    </button>
+    <button (click)="cancelRating()">Cancel</button>
+  </div>
+</div>
+<div class="modal" *ngIf="showSkipConfirm">
+  <div class="modal-content">
+    <h3>Skip recipe?</h3>
+
+    <button (click)="confirmSkip()">Yes</button>
+    <button (click)="cancelSkip()">No</button>
+  </div>
+</div>

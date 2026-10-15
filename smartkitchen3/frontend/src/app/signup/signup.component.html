@@ -1,0 +1,106 @@
+<!-- Renders the account registration form and validation feedback. -->
+<div class="signup-container">
+
+  <h2>Create Account</h2>
+
+  <p class="subtitle">
+    Sign up to start managing your kitchen smarter
+  </p>
+
+  <!-- ERROR -->
+  <div *ngIf="errorMessage" class="error-box" role="alert" aria-live="polite">
+    {{ errorMessage }}
+  </div>
+
+  <!-- FORM -->
+  <form (ngSubmit)="onSignup()" #signupForm="ngForm" novalidate>
+
+    <!-- EMAIL -->
+    <label for="signup-email">Email</label>
+    <input
+      id="signup-email"
+      type="email"
+      name="email"
+      [(ngModel)]="userData.email"
+      required
+      maxlength="254"
+      autocomplete="email"
+      inputmode="email"
+      [disabled]="isLoading"
+      [attr.aria-invalid]="!!fieldErrors.email"
+      aria-describedby="signup-email-error"
+      placeholder="name@example.com"
+    />
+    <small id="signup-email-error" class="field-error" *ngIf="fieldErrors.email">{{ fieldErrors.email }}</small>
+
+    <!-- PASSWORD -->
+    <label for="signup-password">Password</label>
+    <input
+      id="signup-password"
+      type="password"
+      name="password"
+      [(ngModel)]="userData.password"
+      required
+      minlength="8"
+      maxlength="128"
+      autocomplete="new-password"
+      [disabled]="isLoading"
+      [attr.aria-invalid]="!!fieldErrors.password"
+      aria-describedby="password-hint signup-password-error"
+      placeholder="Create a strong password"
+    />
+    <small id="password-hint" class="field-hint">8+ characters with uppercase, lowercase, and a number.</small>
+    <small id="signup-password-error" class="field-error" *ngIf="fieldErrors.password">{{ fieldErrors.password }}</small>
+
+    <label for="signup-confirm-password">Confirm Password</label>
+    <input
+      id="signup-confirm-password"
+      type="password"
+      name="confirmPassword"
+      [(ngModel)]="userData.confirmPassword"
+      required
+      maxlength="128"
+      autocomplete="new-password"
+      [disabled]="isLoading"
+      [attr.aria-invalid]="!!fieldErrors.confirmPassword"
+      aria-describedby="signup-confirm-error"
+      placeholder="Repeat your password"
+    />
+    <small id="signup-confirm-error" class="field-error" *ngIf="fieldErrors.confirmPassword">{{ fieldErrors.confirmPassword }}</small>
+
+    <!-- LAST NAME -->
+    <label for="signup-last-name">Last Name</label>
+    <input
+      id="signup-last-name"
+      type="text"
+      name="last_name"
+      [(ngModel)]="userData.last_name"
+      required
+      maxlength="80"
+      autocomplete="family-name"
+      [disabled]="isLoading"
+      [attr.aria-invalid]="!!fieldErrors.lastName"
+      aria-describedby="signup-last-name-error"
+      placeholder="Enter your last name"
+    />
+    <small id="signup-last-name-error" class="field-error" *ngIf="fieldErrors.lastName">{{ fieldErrors.lastName }}</small>
+
+    <!-- SUBMIT -->
+    <button
+      type="submit"
+      [disabled]="isLoading || !signupForm.form.valid">
+
+      <span *ngIf="!isLoading">Sign Up</span>
+      <span *ngIf="isLoading">Creating account...</span>
+
+    </button>
+
+  </form>
+
+  <!-- NAV LINK -->
+  <p class="bottom-text">
+    Already have an account?
+    <a routerLink="/login">Login</a>
+  </p>
+
+</div>

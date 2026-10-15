@@ -1,0 +1,22 @@
+<!-- Defines the persistent branded application shell and routed page viewport. -->
+<div class="app-shell">
+  <header class="main-header">
+    <div class="header-content">
+      <a class="brand" routerLink="/home" aria-label="Smart Kitchen home">
+        <span class="brand-mark" aria-hidden="true">SK</span>
+        <span class="brand-copy"><strong>Smart Kitchen</strong><small>Plan well. Waste less.</small></span>
+      </a>
+
+      <nav class="main-navigation" aria-label="Main navigation">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/inventory" routerLinkActive="active">Inventory</a>
+        <a routerLink="/recommendations" routerLinkActive="active">Recommendations</a>
+        <a routerLink="/history" routerLinkActive="active">History</a>
+        <a routerLink="/settings" routerLinkActive="active">Preferences</a>
+      </nav>
+    </div>
+  </header>
+  <main class="content-area"><router-outlet></router-outlet></main>
+  <app-floating-ai-assistant></app-floating-ai-assistant>
+  <footer class="main-footer"><p>© 2026 Smart Kitchen · Designed for smarter households</p></footer>
+</div>
