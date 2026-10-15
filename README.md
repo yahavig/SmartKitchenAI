@@ -77,16 +77,18 @@ The locked test evaluation included 162 impressions from 162 households. The aca
 ## Repository structure
 
 ```text
-smartkitchen3/
-  frontend/                  Angular application
-  backend/
-    app.py                   Flask API and recommendation pipeline
-    seed_demo_data.py        Small public demo dataset
-    train_model.py           Model training pipeline
-    metrics_evaluation.py    Offline ranking evaluation
-    evaluation_protocol.py   Household-level data split
-    recommendation_model.pkl Trained model artifact
-    requirements.txt         Python dependencies
+SmartKitchenAI/
+  README.md                  Project overview and setup instructions
+  smartkitchen3/
+    frontend/                Angular application
+    backend/
+      app.py                 Flask API and recommendation pipeline
+      seed_demo_data.py      Small public demo dataset
+      train_model.py         Model training pipeline
+      metrics_evaluation.py  Offline ranking evaluation
+      evaluation_protocol.py Household-level data split
+      recommendation_model.pkl Trained model artifact
+      requirements.txt       Python dependencies
 ```
 
 Large MongoDB exports, virtual environments, package caches, build output, and private user records are intentionally excluded from this repository.
@@ -102,6 +104,8 @@ The core inventory and recommendation features work without Ollama. Ollama is re
 
 ## Run locally
 
+Download and extract the repository ZIP, or clone the repository. The repository root is the folder containing this README and the `smartkitchen3` directory.
+
 ### 1. Start MongoDB
 
 On macOS with Homebrew:
@@ -114,14 +118,17 @@ MongoDB must be available at `mongodb://127.0.0.1:27017/`. The application uses 
 
 ### 2. Create the Python environment
 
-From the repository root:
+From the repository root, enter the application folder first:
 
 ```bash
+cd smartkitchen3
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -r backend/requirements.txt
 ```
+
+Run steps 3 and 4 from this same terminal, inside `smartkitchen3`, with the virtual environment active.
 
 ### 3. Load the lightweight demo data
 
@@ -144,7 +151,7 @@ The seed script is idempotent and contains only fictional public demo data.
 python3 backend/app.py
 ```
 
-The API runs at `http://localhost:5000`.
+The API runs at `http://localhost:5000`. Keep this terminal open.
 
 ### 5. Start Ollama
 
@@ -159,10 +166,10 @@ Ollama runs at `http://localhost:11434`.
 
 ### 6. Start Angular
 
-In another terminal:
+In another terminal, start from the repository root:
 
 ```bash
-cd frontend
+cd smartkitchen3/frontend
 npm install
 npm start
 ```
@@ -171,7 +178,7 @@ Open `http://localhost:4200`.
 
 ## Optional model workflows
 
-The repository includes the trained model, so training is not required to run the application. With a compatible research dataset loaded into MongoDB, the following commands can be used:
+The repository includes the trained model, so training is not required to run the application. With a compatible research dataset loaded into MongoDB, the following commands can be used from inside `smartkitchen3`, with the Python virtual environment active:
 
 ```bash
 python3 backend/train_model.py
@@ -190,4 +197,3 @@ The full academic dataset is not distributed in this portfolio repository becaus
 ## Academic context
 
 This repository is a cleaned portfolio edition of a collaborative final degree project. It focuses on the application source code, recommendation architecture, reproducible setup, and a small fictional demo dataset. Generated caches, local environments, large research exports, submission documents, and private records are excluded.
-
